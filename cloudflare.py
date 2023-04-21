@@ -4,14 +4,14 @@ import os
 
 logger = logging.getLogger("cloudflare")
 
-CF_KEY = os.environ["CF_KEY"]
+CF_API_TOKEN = os.environ["CF_API_TOKEN"]
 CF_ZONE_ID = os.environ["CF_ZONE_ID"]
 
-if not CF_KEY or not CF_ZONE_ID:
+if not CF_API_TOKEN or not CF_ZONE_ID:
     raise Exception("Missing Cloudflare credentials")
 
 session = requests.Session()
-session.headers.update({"Authorization": f"Bearer {CF_KEY}"})
+session.headers.update({"Authorization": f"Bearer {CF_API_TOKEN}"})
 
 
 def get_lists(name_prefix: str):

@@ -90,7 +90,7 @@ class App:
         domains = []
         for line in data.splitlines():
             # skip comments and empty lines
-            if line.startswith("#") or line == "\n":
+            if line.startswith("#") or line == "\n" or line == "":
                 continue
 
             if is_hosts_file:
