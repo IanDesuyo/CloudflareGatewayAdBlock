@@ -63,7 +63,7 @@ class App:
         else:
             self.logger.info("Updating firewall policy")
 
-            cloudflare.update_gateway_policy(cf_policies[0]["id"], [l["id"] for l in cf_lists])
+            cloudflare.update_gateway_policy(f"{self.name_prefix} Block Ads", cf_policies[0]["id"], [l["id"] for l in cf_lists])
 
         self.logger.info("Done")
 
