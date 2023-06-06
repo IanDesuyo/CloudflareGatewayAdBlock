@@ -1,5 +1,6 @@
 import logging
 import pathlib
+from typing import List
 import requests
 import cloudflare
 
@@ -110,7 +111,7 @@ class App:
 
         return domains
 
-    def chunk_list(self, _list: list[str], n: int):
+    def chunk_list(self, _list: List[str], n: int):
         for i in range(0, len(_list), n):
             yield _list[i : i + n]
 
