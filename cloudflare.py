@@ -68,7 +68,6 @@ def get_firewall_policies(name_prefix: str):
     )
 
     logger.debug(f"[get_firewall_policies] {r.status_code}")
-    logger.debug(f"{r.json()}")
 
     if r.status_code != 200:
         raise Exception("Failed to get Cloudflare firewall policies")
