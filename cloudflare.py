@@ -1,3 +1,4 @@
+from typing import List
 import requests
 import logging
 import os
@@ -5,9 +6,9 @@ import os
 logger = logging.getLogger("cloudflare")
 
 CF_API_TOKEN = os.environ["CF_API_TOKEN"]
-CF_ZONE_ID = os.environ["CF_ZONE_ID"]
+CF_IDENTIFIER = os.environ["CF_IDENTIFIER"]
 
-if not CF_API_TOKEN or not CF_ZONE_ID:
+if not CF_API_TOKEN or not CF_IDENTIFIER:
     raise Exception("Missing Cloudflare credentials")
 
 session = requests.Session()
@@ -16,7 +17,7 @@ session.headers.update({"Authorization": f"Bearer {CF_API_TOKEN}"})
 
 def get_lists(name_prefix: str):
     r = session.get(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/gateway/lists",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/lists",
     )
 
     logger.debug(f"[get_lists] {r.status_code}")
@@ -29,9 +30,9 @@ def get_lists(name_prefix: str):
     return [l for l in lists if l["name"].startswith(name_prefix)]
 
 
-def create_list(name: str, domains: list[str]):
+def create_list(name: str, domains: List[str]):
     r = session.post(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/gateway/lists",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/lists",
         json={
             "name": name,
             "description": "Created by script.",
@@ -50,7 +51,7 @@ def create_list(name: str, domains: list[str]):
 
 def delete_list(list_id: str):
     r = session.delete(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/gateway/lists/{list_id}",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/lists/{list_id}",
     )
 
     logger.debug(f"[delete_list] {r.status_code}")
@@ -63,7 +64,7 @@ def delete_list(list_id: str):
 
 def get_firewall_policies(name_prefix: str):
     r = session.get(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/firewall/access_rules/rules",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/rules",
     )
 
     logger.debug(f"[get_firewall_policies] {r.status_code}")
@@ -76,9 +77,9 @@ def get_firewall_policies(name_prefix: str):
     return [l for l in lists if l["name"].startswith(name_prefix)]
 
 
-def create_gateway_policy(name: str, list_ids: list[str]):
+def create_gateway_policy(name: str, list_ids: List[str]):
     r = session.post(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/gateway/rules",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/rules",
         json={
             "name": name,
             "description": "Created by script.",
@@ -100,10 +101,13 @@ def create_gateway_policy(name: str, list_ids: list[str]):
     return r.json()["result"]
 
 
-def update_gateway_policy(policy_id: str, list_ids: list[str]):
+def update_gateway_policy(name: str, policy_id: str, list_ids: List[str]):
     r = session.put(
-        f"https://api.cloudflare.com/client/v4/accounts/{CF_ZONE_ID}/gateway/rules/{policy_id}",
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/rules/{policy_id}",
         json={
+            "name": name,
+            "action": "block",
+            "enabled": True,
             "traffic": "or".join([f"any(dns.domains[*] in ${l})" for l in list_ids]),
         },
     )

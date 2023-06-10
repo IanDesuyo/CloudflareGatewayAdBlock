@@ -1,5 +1,6 @@
 import logging
 import pathlib
+from typing import List
 import requests
 import cloudflare
 
@@ -62,7 +63,7 @@ class App:
         else:
             self.logger.info("Updating firewall policy")
 
-            cloudflare.update_gateway_policy(cf_policies[0]["id"], [l["id"] for l in cf_lists])
+            cloudflare.update_gateway_policy(f"{self.name_prefix} Block Ads", cf_policies[0]["id"], [l["id"] for l in cf_lists])
 
         self.logger.info("Done")
 
@@ -110,7 +111,7 @@ class App:
 
         return domains
 
-    def chunk_list(self, _list: list[str], n: int):
+    def chunk_list(self, _list: List[str], n: int):
         for i in range(0, len(_list), n):
             yield _list[i : i + n]
 
