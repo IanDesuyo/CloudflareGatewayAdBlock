@@ -2,11 +2,14 @@ from typing import List
 import requests
 import logging
 import os
+import dotenv
+from dotenv import load_dotenv
 
 logger = logging.getLogger("cloudflare")
+load_dotenv()
 
-CF_API_TOKEN = os.environ["CF_API_TOKEN"]
-CF_IDENTIFIER = os.environ["CF_IDENTIFIER"]
+CF_API_TOKEN = os.getenv("CF_API_TOKEN") or os.environ.get("CF_API_TOKEN")
+CF_IDENTIFIER = os.getenv("CF_IDENTIFIER") or os.environ.get("CF_IDENTIFIER")
 
 if not CF_API_TOKEN or not CF_IDENTIFIER:
     raise Exception("Missing Cloudflare credentials")
