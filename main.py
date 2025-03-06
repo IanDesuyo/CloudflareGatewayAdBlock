@@ -26,6 +26,12 @@ class App:
             self.logger.warning("Lists are the same size, skipping")
 
         else:
+            # delete the polices
+            cf_policies = cloudflare.get_firewall_policies(self.name_prefix)
+            for p in cf_policies:
+                self.logger.info(f"Deleting policy {p['name']}")
+                cloudflare.delete_gateway_policy(p["id"])
+                
             # delete the lists
             for l in cf_lists:
                 self.logger.info(f"Deleting list {l['name']}")
