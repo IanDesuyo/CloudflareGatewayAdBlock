@@ -118,3 +118,16 @@ def update_gateway_policy(name: str, policy_id: str, list_ids: List[str]):
         raise Exception("Failed to update Cloudflare firewall policy")
 
     return r.json()["result"]
+
+
+def delete_gateway_policy(policy_id: str):
+    r = session.delete(
+        f"https://api.cloudflare.com/client/v4/accounts/{CF_IDENTIFIER}/gateway/rules/{policy_id}"
+    )
+
+    logger.debug(f"[delete_gateway_policy] {r.status_code}")
+
+    if r.status_code != 200:
+        raise Exception("Failed to delete Cloudflare firewall policy")
+
+    return r.json()["result"]
