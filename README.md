@@ -24,8 +24,8 @@ Cloudflare provides a free plan for Zero Trust Gateway, which is enough for this
 ```bash
 # API Token
 export CF_API_TOKEN=your_api_token
-# Zone ID of your domain, can be found in url like https://dash.cloudflare.com/{zone_id}
-export CF_ZONE_ID=your_zone_id
+# Account ID, can be found in url like https://dash.cloudflare.com/{account_id}
+export CF_IDENTIFIER=your_account_id
 ```
 
 4. Edit `main.py` to set adblock list url.
